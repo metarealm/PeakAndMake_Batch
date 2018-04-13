@@ -7,16 +7,21 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.pnm.batching.dto.IYouTubeDTO;
 import com.pnm.batching.services.YTInfoExtractorService;
 
+@Component
 public class YTChannelItemReader implements ItemReader<IYouTubeDTO> {
 
 	private int nextIndex;
 	private int maxIndex;
 
 	private HashSet<IYouTubeDTO> youTubeData;
+	
+	@Autowired
 	private YTInfoExtractorService infoExtractorService;
 	private Iterator<IYouTubeDTO> ytItr;
 
