@@ -13,6 +13,15 @@ import org.springframework.stereotype.Component;
 import com.pnm.batching.dto.IYouTubeDTO;
 import com.pnm.batching.services.YTInfoExtractorService;
 
+/**
+ * YTChannelItemReader class for batch reading of youtube channel or video data
+ * Use infoExtractorService  of type YTInfoExtractorService interface to read generic info
+ * 
+ * @author Binay
+ * @version 1.0 
+ *@
+ */
+
 @Component
 public class YTChannelItemReader implements ItemReader<IYouTubeDTO> {
 
