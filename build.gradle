@@ -10,8 +10,11 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
+apply plugin: 'application'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+
+mainClassName = 'com.pnm.data.CollectorApplication'
 
 bootJar {
     baseName = 'gs-batch-processing'
@@ -28,6 +31,8 @@ targetCompatibility = 1.8
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-batch")
     compile("org.springframework:spring-web")
+    compile("org.springframework.boot:spring-boot-starter-data-mongodb")
+    testCompile("org.springframework.boot:spring-boot-starter-test")
     compile("org.hsqldb:hsqldb")
     testCompile("junit:junit")
 }
