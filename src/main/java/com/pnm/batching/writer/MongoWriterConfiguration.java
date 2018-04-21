@@ -4,17 +4,16 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.data.authentication.UserCredentials;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.mongodb.MongoClient;
-import com.mongodb.WriteConcern;
 
 @Configuration
 @EnableBatchProcessing
-@Profile("dev1")
+//@Profile("dev1")
+@PropertySource("classpath:config.properties")
 public class MongoWriterConfiguration extends AbstractMongoConfiguration {
 
 	@Value("${mongodb.name}")
@@ -45,11 +44,7 @@ public class MongoWriterConfiguration extends AbstractMongoConfiguration {
 	@Override
 	@Bean
 	public MongoTemplate mongoTemplate() throws Exception {
-		final UserCredentials userCredentials = new UserCredentials(this.userName, this.password);
-
 		final MongoTemplate mongoTemplate = new MongoTemplate(mongoClient(), getDatabaseName());
-		mongoTemplate.setWriteConcern(WriteConcern.SAFE);
-
 		return mongoTemplate;
 	}
 

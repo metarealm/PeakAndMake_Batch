@@ -25,7 +25,7 @@ import com.pnm.data.YoutubeBatchConfig;
  */
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, DataSourceTransactionManagerAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 @ContextConfiguration(classes = {YoutubeBatchConfig.class})
 public class BatchProcesTest {
 

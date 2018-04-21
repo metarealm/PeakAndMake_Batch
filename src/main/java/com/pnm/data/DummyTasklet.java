@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.pnm.batching.tasklets;
+package com.pnm.data;
 
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
