@@ -30,7 +30,9 @@ targetCompatibility = 1.8
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-batch")
-    compile("org.springframework:spring-web")
+    //compile("org.springframework:spring-web")
+    compile ("com.google.oauth-client:google-oauth-client-jetty:1.23.0")
+    compile("com.google.apis:google-api-services-youtube:v3-rev193-1.23.0")
     compile("org.springframework.boot:spring-boot-starter-data-mongodb")
     testCompile("org.springframework.boot:spring-boot-starter-test")
     compile("org.hsqldb:hsqldb")

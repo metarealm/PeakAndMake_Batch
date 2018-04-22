@@ -1,7 +1,5 @@
 package com.pnm.data;
 
-import javax.sql.DataSource;
-
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.DefaultBatchConfigurer;
@@ -10,11 +8,16 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+
+import com.pnm.batching.services.DataExtractorService;
+import com.pnm.batching.services.impl.YTChannelInfoExtractorServiceImpl;
 
 
 @Configuration
 @EnableBatchProcessing
+@ComponentScan(basePackages={"com.pnm.data","com.pnm.batching.services.impl","com.pnm.batching.services"})
 public class YoutubeBatchConfig extends DefaultBatchConfigurer{
 
 	@Autowired
@@ -25,6 +28,11 @@ public class YoutubeBatchConfig extends DefaultBatchConfigurer{
 
 	@Autowired
 	private DummyTasklet dummyTask;
+	
+//	@Bean DataExtractorService getYTChannelDtSvc(){
+//		return new YTChannelInfoExtractorServiceImpl();
+//	}
+	
 	
 	@Bean
 	public Job importUserJob(JobCompletionNotificationListener listener, Step step1) {
