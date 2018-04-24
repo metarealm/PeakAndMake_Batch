@@ -6,19 +6,18 @@ import org.springframework.batch.core.configuration.annotation.DefaultBatchConfi
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import com.pnm.batching.services.DataExtractorService;
-import com.pnm.batching.services.impl.YTChannelInfoExtractorServiceImpl;
-
+import com.pnm.batching.tasklets.DummyTasklet;
 
 @Configuration
 @EnableBatchProcessing
-@ComponentScan(basePackages={"com.pnm.data","com.pnm.batching.services.impl","com.pnm.batching.services"})
-public class YoutubeBatchConfig extends DefaultBatchConfigurer{
+@ComponentScan(basePackages = { "com.pnm.batching.tasklets", "com.pnm.data", "com.pnm.batching.services.impl", "com.pnm.batching.services" })
+public class YoutubeBatchConfig extends DefaultBatchConfigurer {
 
 	@Autowired
 	public JobBuilderFactory jobBuilderFactory;
@@ -28,15 +27,10 @@ public class YoutubeBatchConfig extends DefaultBatchConfigurer{
 
 	@Autowired
 	private DummyTasklet dummyTask;
-	
-//	@Bean DataExtractorService getYTChannelDtSvc(){
-//		return new YTChannelInfoExtractorServiceImpl();
-//	}
-	
-	
+
 	@Bean
 	public Job importUserJob(JobCompletionNotificationListener listener, Step step1) {
-		return jobBuilderFactory.get("importUserJob").start(step1).build();
+		return jobBuilderFactory.get("importYTdataJob").incrementer(new RunIdIncrementer()).listener(listener).start(step1).build();
 	}
 
 	@Bean
@@ -44,5 +38,4 @@ public class YoutubeBatchConfig extends DefaultBatchConfigurer{
 		return stepBuilderFactory.get("writeLines").tasklet(dummyTask).build();
 	}
 
-	
 }

@@ -1,13 +1,10 @@
 package com.pnm.batching.services.impl;
 
+import java.util.HashMap;
 import java.util.HashSet;
-
 import org.springframework.stereotype.Service;
-
-import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.services.youtube.YouTube;
-import com.google.api.services.youtube.model.Channel;
-import com.google.api.services.youtube.model.ChannelListResponse;
+import com.google.api.services.youtube.model.SearchListResponse;
 import com.pnm.batching.dto.IYouTubeDTO;
 import com.pnm.batching.services.YTInfoExtractorService;
 
@@ -16,23 +13,34 @@ public class YTChannelInfoExtractorServiceImpl extends YTInfoExtractorService {
 
 	@Override
 	public HashSet<IYouTubeDTO> getYouTubeInfo() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public void getJsonData() {
 		try {
-			YouTube.Channels.List channelsListByUsernameRequest = this.youtubeService.channels().list("snippet,contentDetails,statistics");
-			channelsListByUsernameRequest.setForUsername("GoogleDevelopers");
+			HashMap<String, String> parameters = new HashMap<>();
+			parameters.put("part", "snippet");
+			parameters.put("maxResults", "5");
+			parameters.put("q", "indian recipe");
+			parameters.put("type", "channel");
 
-			ChannelListResponse response = channelsListByUsernameRequest.execute();
-			Channel channel = response.getItems().get(0);
-			System.out.printf("This channel's ID is %s. Its title is '%s', and it has %s views.\n", channel.getId(), channel.getSnippet().getTitle(), channel.getStatistics().getViewCount());
-		} catch (GoogleJsonResponseException e) {
-			e.printStackTrace();
-			System.err.println("There was a service error: " + e.getDetails().getCode() + " : " + e.getDetails().getMessage());
-		} catch (Throwable t) {
-			t.printStackTrace();
+			YouTube.Search.List searchListByKeywordRequest = this.youtubeService.search().list(parameters.get("part"));
+			if (parameters.containsKey("maxResults")) {
+				searchListByKeywordRequest.setMaxResults(Long.parseLong(parameters.get("maxResults").toString()));
+			}
+
+			if (parameters.containsKey("q") && parameters.get("q") != "") {
+				searchListByKeywordRequest.setQ(parameters.get("q").toString());
+			}
+
+			if (parameters.containsKey("type") && parameters.get("type") != "") {
+				searchListByKeywordRequest.setType(parameters.get("type").toString());
+			}
+
+			SearchListResponse response = searchListByKeywordRequest.execute();
+			System.out.println(response);
+		} catch (Exception ex) {
+			System.out.println("Got exception " + ex.getMessage());
 		}
 	}
 }
