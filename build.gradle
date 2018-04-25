@@ -16,9 +16,8 @@ apply plugin: 'io.spring.dependency-management'
 
 mainClassName = 'com.pnm.data.CollectorApplication'
 
-bootRun {
-  jvmArgs=["-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"]
-}
+//bootRun {jvmArgs=["-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"]}
+
 bootJar {
     baseName = 'gs-batch-processing'
     version =  '0.1.0'

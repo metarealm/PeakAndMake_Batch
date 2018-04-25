@@ -2,10 +2,16 @@ package com.pnm.batching.services.impl;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.stream.Stream;
+
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.pnm.batching.dto.IYouTubeDTO;
+import com.pnm.batching.dto.impl.YTChannelReaderDtoImpl;
 import com.pnm.batching.services.YTInfoExtractorService;
 
 @Service
@@ -38,8 +44,21 @@ public class YTChannelInfoExtractorServiceImpl extends YTInfoExtractorService {
 			}
 
 			SearchListResponse response = searchListByKeywordRequest.execute();
-			System.out.println(response);
+			System.out.println("**************response*************");
+//			System.out.println(response.toPrettyString());
+			ObjectMapper mapper = new ObjectMapper();
+			String itemString = mapper.readTree(response.toString()).get("items").toString();
+			YTChannelReaderDtoImpl[] channelData = mapper.readValue(itemString ,YTChannelReaderDtoImpl[].class);
+			System.out.println("**************json*************");
+			Stream.of(channelData).forEach(data -> {
+			try {
+				System.out.println(new ObjectMapper().writeValueAsString(data));
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
+			});
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			System.out.println("Got exception " + ex.getMessage());
 		}
 	}
