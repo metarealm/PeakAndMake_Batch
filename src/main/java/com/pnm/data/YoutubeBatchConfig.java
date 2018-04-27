@@ -7,16 +7,22 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-import com.pnm.batching.tasklets.DummyTasklet;
+import com.pnm.batching.reactive.data.ChannelRepository;
 
 @Configuration
 @EnableBatchProcessing
-@ComponentScan(basePackages = { "com.pnm.batching.tasklets", "com.pnm.data", "com.pnm.batching.services.impl", "com.pnm.batching.services" })
+@EnableAutoConfiguration
+@ComponentScan(basePackages = { "com.pnm.batching.tasklets", "com.pnm.data", "com.pnm.batching.services.impl",
+		         "com.pnm.batching.services" , "com.pnm.batching.*" })
+@EnableMongoRepositories(basePackageClasses = ChannelRepository.class)
 public class YoutubeBatchConfig extends DefaultBatchConfigurer {
 
 	@Autowired
@@ -26,7 +32,8 @@ public class YoutubeBatchConfig extends DefaultBatchConfigurer {
 	public StepBuilderFactory stepBuilderFactory;
 
 	@Autowired
-	private DummyTasklet dummyTask;
+	private Tasklet dummyTask;
+
 
 	@Bean
 	public Job importUserJob(JobCompletionNotificationListener listener, Step step1) {

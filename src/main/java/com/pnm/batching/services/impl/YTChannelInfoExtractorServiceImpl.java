@@ -1,7 +1,9 @@
 package com.pnm.batching.services.impl;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
@@ -11,18 +13,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.pnm.batching.dto.IYouTubeDTO;
-import com.pnm.batching.dto.impl.YTChannelReaderDtoImpl;
+import com.pnm.batching.dto.impl.YTChannelDto;
 import com.pnm.batching.services.YTInfoExtractorService;
 
 @Service
-public class YTChannelInfoExtractorServiceImpl extends YTInfoExtractorService {
+public class YTChannelInfoExtractorServiceImpl<E> extends YTInfoExtractorService {
 
 	@Override
 	public HashSet<IYouTubeDTO> getYouTubeInfo() {
 		return null;
 	}
 
-	public void getJsonData() {
+	public List<YTChannelDto> getJsonData() {
 		try {
 			HashMap<String, String> parameters = new HashMap<>();
 			parameters.put("part", "snippet");
@@ -45,21 +47,23 @@ public class YTChannelInfoExtractorServiceImpl extends YTInfoExtractorService {
 
 			SearchListResponse response = searchListByKeywordRequest.execute();
 			System.out.println("**************response*************");
-//			System.out.println(response.toPrettyString());
+			// System.out.println(response.toPrettyString());
 			ObjectMapper mapper = new ObjectMapper();
 			String itemString = mapper.readTree(response.toString()).get("items").toString();
-			YTChannelReaderDtoImpl[] channelData = mapper.readValue(itemString ,YTChannelReaderDtoImpl[].class);
+			YTChannelDto[] channelData = mapper.readValue(itemString, YTChannelDto[].class);
 			System.out.println("**************json*************");
 			Stream.of(channelData).forEach(data -> {
-			try {
-				System.out.println(new ObjectMapper().writeValueAsString(data));
-			} catch (JsonProcessingException e) {
-				e.printStackTrace();
-			}
+				try {
+					System.out.println(new ObjectMapper().writeValueAsString(data));
+				} catch (JsonProcessingException e) {
+					e.printStackTrace();
+				}
 			});
+			return Arrays.asList(channelData);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			System.out.println("Got exception " + ex.getMessage());
+			return null;
 		}
 	}
 }

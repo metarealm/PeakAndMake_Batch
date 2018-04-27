@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
-public class YTChannelDeserialize extends StdDeserializer<YTChannelReaderDtoImpl> {
+public class YTChannelDeserialize extends StdDeserializer<YTChannelDto> {
 
 	/**
 	 * 
@@ -19,14 +19,14 @@ public class YTChannelDeserialize extends StdDeserializer<YTChannelReaderDtoImpl
 		this(null);
 	}
 
-	protected YTChannelDeserialize(Class<YTChannelReaderDtoImpl> vc) {
+	protected YTChannelDeserialize(Class<YTChannelDto> vc) {
 		super(vc);
 	}
 
 	@Override
-	public YTChannelReaderDtoImpl deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+	public YTChannelDto deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
 		JsonNode productNode = jp.getCodec().readTree(jp);
-		YTChannelReaderDtoImpl channelData = new YTChannelReaderDtoImpl();
+		YTChannelDto channelData = new YTChannelDto();
 		channelData.setChannelID(productNode.get("snippet").get("channelId").textValue());
 		channelData.setEtag(productNode.get("etag").textValue());
 		channelData.setChannelTitle(productNode.get("snippet").get("channelTitle").textValue());

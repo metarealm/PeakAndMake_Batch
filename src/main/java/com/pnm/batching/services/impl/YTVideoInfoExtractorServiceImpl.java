@@ -1,6 +1,7 @@
 package com.pnm.batching.services.impl;
 
 import java.util.HashSet;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -15,8 +16,8 @@ public class YTVideoInfoExtractorServiceImpl extends YTInfoExtractorService {
 		return null;
 	}
 
-	public void getJsonData() {
-
+	public List<?> getJsonData() {
+		return null;
 	}
 
 }

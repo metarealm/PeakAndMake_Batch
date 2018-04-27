@@ -22,7 +22,6 @@ import com.pnm.batching.services.YTInfoExtractorService;
  *@
  */
 
-@Component
 public class YTChannelItemReader implements ItemReader<IYouTubeDTO> {
 
 	private int nextIndex;

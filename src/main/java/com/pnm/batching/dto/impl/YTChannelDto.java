@@ -1,11 +1,10 @@
 package com.pnm.batching.dto.impl;
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pnm.batching.dto.IYouTubeDTO;
 
 
 @JsonDeserialize(using = YTChannelDeserialize.class)
-public class YTChannelReaderDtoImpl implements IYouTubeDTO {
+public class YTChannelDto implements IYouTubeDTO {
 	private String etag;
 	private String channelID;
 	private String channelTitle;
