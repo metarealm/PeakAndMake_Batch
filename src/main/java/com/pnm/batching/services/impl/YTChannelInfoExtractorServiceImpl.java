@@ -1,9 +1,9 @@
 package com.pnm.batching.services.impl;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
@@ -26,26 +26,16 @@ public class YTChannelInfoExtractorServiceImpl<E> extends YTInfoExtractorService
 
 	public List<YTChannelDto> getJsonData() {
 		try {
-			HashMap<String, String> parameters = new HashMap<>();
-			parameters.put("part", "snippet");
-			parameters.put("maxResults", "5");
-			parameters.put("q", "indian recipe");
-			parameters.put("type", "channel");
-
-			YouTube.Search.List searchListByKeywordRequest = this.youtubeService.search().list(parameters.get("part"));
-			if (parameters.containsKey("maxResults")) {
-				searchListByKeywordRequest.setMaxResults(Long.parseLong(parameters.get("maxResults").toString()));
-			}
-
-			if (parameters.containsKey("q") && parameters.get("q") != "") {
-				searchListByKeywordRequest.setQ(parameters.get("q").toString());
-			}
-
-			if (parameters.containsKey("type") && parameters.get("type") != "") {
-				searchListByKeywordRequest.setType(parameters.get("type").toString());
-			}
-
+			Optional<String> pageToken = Optional.empty();
+			String sPageToken = null;
+			
+			YouTube.Search.List searchListByKeywordRequest = this.youtubeService.search().list("snippet");
+			searchListByKeywordRequest.setMaxResults(10L);
+			searchListByKeywordRequest.setQ("indian recipe");
+			searchListByKeywordRequest.setType("channel");
+			searchListByKeywordRequest.setPageToken(sPageToken);
 			SearchListResponse response = searchListByKeywordRequest.execute();
+			
 			System.out.println("**************response*************");
 			// System.out.println(response.toPrettyString());
 			ObjectMapper mapper = new ObjectMapper();

@@ -32,7 +32,7 @@ public class YoutubeBatchConfig extends DefaultBatchConfigurer {
 	public StepBuilderFactory stepBuilderFactory;
 
 	@Autowired
-	private Tasklet dummyTask;
+	private Tasklet importChannelDataTask;
 
 
 	@Bean
@@ -42,7 +42,7 @@ public class YoutubeBatchConfig extends DefaultBatchConfigurer {
 
 	@Bean
 	protected Step writeLines() {
-		return stepBuilderFactory.get("writeLines").tasklet(dummyTask).build();
+		return stepBuilderFactory.get("writeLines").tasklet(importChannelDataTask).build();
 	}
 
 }
