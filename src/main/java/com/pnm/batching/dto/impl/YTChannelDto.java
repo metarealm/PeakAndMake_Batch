@@ -1,11 +1,15 @@
 package com.pnm.batching.dto.impl;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pnm.batching.dto.IYouTubeDTO;
 
-
+@Document(collection = "ChannelData")
 @JsonDeserialize(using = YTChannelDeserialize.class)
 public class YTChannelDto implements IYouTubeDTO {
 	private String etag;
+	@Id
 	private String channelID;
 	private String channelTitle;
 	private String channelDescription;
@@ -86,7 +90,7 @@ public class YTChannelDto implements IYouTubeDTO {
 		this.channelImageHighUrl = channelImageHighUrl;
 	}
 	/**
-	 * @return the channelImageMediumUrl
+	 * @return the channelImageMediumUrlÏ
 	 */
 	public String getChannelImageMediumUrl() {
 		return channelImageMediumUrl;

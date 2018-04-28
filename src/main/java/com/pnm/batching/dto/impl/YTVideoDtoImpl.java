@@ -2,14 +2,14 @@ package com.pnm.batching.dto.impl;
 
 import com.pnm.batching.dto.IYouTubeDTO;
 
-public class YTVideoReaderDtoImpl implements IYouTubeDTO {
+public class YTVideoDtoImpl implements IYouTubeDTO {
 	private String videoID;
     private String videoName;
 
-    public YTVideoReaderDtoImpl() {
+    public YTVideoDtoImpl() {
     }
 
-    public YTVideoReaderDtoImpl(String id, String name) {
+    public YTVideoDtoImpl(String id, String name) {
         this.videoID = id;
         this.videoName = name;
     }
