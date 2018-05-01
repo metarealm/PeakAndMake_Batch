@@ -11,16 +11,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
+import com.mongodb.MongoClient;
 import com.pnm.batching.services.DataExtractorService;
 import com.pnm.batching.services.DataLoaderService;
 import com.pnm.batching.services.YTInfoExtractorService;
 
 @Primary
 @Component
-public class YTChannelDataTasklet<E> implements Tasklet {
+public class YTChannelDataTasklet implements Tasklet {
 
 	private YTInfoExtractorService extractorSvc;
 	private DataLoaderService loaderSvc;
+	private MongoClient mongo;
 	
 	@Autowired
 	public YTChannelDataTasklet(DataExtractorService ytService ,DataLoaderService mongLoaderSvc) {
@@ -35,10 +37,11 @@ public class YTChannelDataTasklet<E> implements Tasklet {
 
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+		
 		 List<?> ytData = this.extractorSvc.getJsonData();
 		loaderSvc.loadData(ytData);
 		System.out.println(" dummy tasklet executed");
-		return null;
+		return RepeatStatus.FINISHED;
 	}
 
 }

@@ -1,11 +1,11 @@
 package com.pnm.batching.services.impl;
 
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ import com.pnm.batching.services.YTInfoExtractorService;
 @Service
 public class YTChannelInfoExtractorServiceImpl<E> extends YTInfoExtractorService {
 
-	private int maxQueryLoop = 10;
+	private int maxQueryLoop = 2;
 
 	@Override
 	public HashSet<IYouTubeDTO> getYouTubeInfo() {
@@ -34,19 +34,17 @@ public class YTChannelInfoExtractorServiceImpl<E> extends YTInfoExtractorService
 
 			YouTube.Search.List searchListByKeywordRequest = this.youtubeService.search().list("snippet");
 			searchListByKeywordRequest.setMaxResults(10L);
-			searchListByKeywordRequest.setQ("indian recipe");
+			searchListByKeywordRequest.setQ("indian recipe cooking food");
 			searchListByKeywordRequest.setType("channel");
 
 			for (int i = 0; i < maxQueryLoop; i++) {
-				if (pageToken.isPresent()){
-					searchListByKeywordRequest.setPageToken(pageToken.get());
-					System.out.println("current page token is "+ pageToken.get());
-				}
+
+				pageToken.ifPresent(val -> searchListByKeywordRequest.setPageToken(val));
 				SearchListResponse response = searchListByKeywordRequest.execute();
 				System.out.println("**************response*************");
 				// System.out.println(response.toPrettyString());
 				ObjectMapper mapper = new ObjectMapper();
-				pageToken =Optional.of(mapper.readTree(response.toString()).get("nextPageToken").asText());
+				pageToken = Optional.of(mapper.readTree(response.toString()).get("nextPageToken").asText());
 				String itemString = mapper.readTree(response.toString()).get("items").toString();
 				System.out.println("*****************" + pageToken + "******************");
 				System.out.println(itemString);
@@ -59,6 +57,7 @@ public class YTChannelInfoExtractorServiceImpl<E> extends YTInfoExtractorService
 					System.out.println(new ObjectMapper().writeValueAsString(data));
 				} catch (JsonProcessingException e) {
 					e.printStackTrace();
+					throw new UncheckedIOException(e);
 				}
 			});
 			return channelData;

@@ -21,22 +21,13 @@ import com.pnm.batching.services.YTInfoExtractorService;
  */
 @Component
 public class DummyTasklet implements Tasklet {
-	
-	private YTInfoExtractorService ytsvc;
-	
+
 	@Autowired
-	DummyTasklet(DataExtractorService ytService){
-		this.ytsvc = (YTInfoExtractorService) ytService;
-		try {
-			this.ytsvc.setDataSrc();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	DummyTasklet(DataExtractorService dataService) {
 	}
-	
+
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-		this.ytsvc.getJsonData();
 		System.out.println(" dummy tasklet executed");
 		return null;
 	}
