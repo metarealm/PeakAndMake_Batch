@@ -1,7 +1,12 @@
 package com.pnm.batching.dto.impl;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.pnm.batching.dto.IYouTubeDTO;
 
+@Document(collection = "VideoData")
+@JsonDeserialize(using = YTVideoDeserialize.class)
 public class YTVideoDtoImpl implements IYouTubeDTO {
 	private String videoID;
     private String videoName;

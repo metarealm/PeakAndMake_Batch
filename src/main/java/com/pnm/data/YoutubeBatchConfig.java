@@ -36,13 +36,13 @@ public class YoutubeBatchConfig extends DefaultBatchConfigurer {
 	private Tasklet importChannelDataTask;
 	
 	@Bean
-	public Job importUserJob(JobCompletionNotificationListener listener, Step step1) {
-		return jobBuilderFactory.get("importYTdataJob").incrementer(new RunIdIncrementer()).listener(listener).start(step1).build();
+	public Job importUserJob(Step channelDataProcessor) {
+		return jobBuilderFactory.get("importYTdataJob").start(channelDataProcessor).build();
 	}
 
 	@Bean
-	protected Step writeLines() {
-		return stepBuilderFactory.get("writeLines").tasklet(importChannelDataTask).build();
+	protected Step channelDataProcessor(JobCompletionNotificationListener listener) {
+		return stepBuilderFactory.get("process channel data").tasklet(importChannelDataTask).listener(listener).build();
 	}
 
 }

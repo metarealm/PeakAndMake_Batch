@@ -1,4 +1,4 @@
-package com.pnm.data.mongo.timesplice;
+package com.pnm.batching.dto.mongo.timesplice;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;

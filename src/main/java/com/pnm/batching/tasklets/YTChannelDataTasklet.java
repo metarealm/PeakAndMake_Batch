@@ -1,7 +1,10 @@
+
 package com.pnm.batching.tasklets;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
@@ -11,7 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-import com.mongodb.MongoClient;
+import com.pnm.batching.dto.mongo.timesplice.LastProcessTime;
+import com.pnm.batching.reactive.data.DateProcessRepository;
 import com.pnm.batching.services.DataExtractorService;
 import com.pnm.batching.services.DataLoaderService;
 import com.pnm.batching.services.YTInfoExtractorService;
@@ -22,10 +26,14 @@ public class YTChannelDataTasklet implements Tasklet {
 
 	private YTInfoExtractorService extractorSvc;
 	private DataLoaderService loaderSvc;
-	private MongoClient mongo;
 	
+	private int taskletLoop = 0 ;
+
 	@Autowired
-	public YTChannelDataTasklet(DataExtractorService ytService ,DataLoaderService mongLoaderSvc) {
+	private DateProcessRepository dateRepository;
+
+	@Autowired
+	public YTChannelDataTasklet(DataExtractorService ytService, DataLoaderService mongLoaderSvc) {
 		this.extractorSvc = (YTInfoExtractorService) ytService;
 		this.loaderSvc = mongLoaderSvc;
 		try {
@@ -34,14 +42,27 @@ public class YTChannelDataTasklet implements Tasklet {
 			e.printStackTrace();
 		}
 	}
-
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+		Optional<LastProcessTime> lastProcessedTime = dateRepository.findById("YouTubeChannelData");
 		
-		 List<?> ytData = this.extractorSvc.getJsonData();
-		loaderSvc.loadData(ytData);
-		System.out.println(" dummy tasklet executed");
-		return RepeatStatus.FINISHED;
+		
+		lastProcessedTime.ifPresent(
+				value -> {
+					LocalDateTime startTime = value.getQueryStartDate();
+					System.out.println(startTime.toString());
+					LocalDateTime endTime = value.getQueryStartDate().plusMonths(1L);
+					List<?> ytData = this.extractorSvc.getJsonData(startTime, endTime );
+					loaderSvc.loadData(ytData);
+					value.setQueryStartDate(endTime);
+					System.out.println("going to save the new date" + endTime.toString());
+					dateRepository.save(value);
+					System.out.println(" dummy tasklet executed");
+				}
+			);
+		taskletLoop++;
+		System.out.println("tasklet loop count is =" + taskletLoop);
+		return (taskletLoop > 5) ? RepeatStatus.FINISHED : RepeatStatus.CONTINUABLE;
 	}
 
 }
