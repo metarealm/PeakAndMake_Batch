@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -22,6 +23,7 @@ import com.pnm.batching.dto.impl.YTChannelDto;
 import com.pnm.batching.services.YTInfoExtractorService;
 
 @Service
+@Qualifier("YTChannelService")
 public class YTChannelInfoExtractorServiceImpl<E> extends YTInfoExtractorService {
 
 	private int maxQueryLoop = 10;
@@ -39,7 +41,7 @@ public class YTChannelInfoExtractorServiceImpl<E> extends YTInfoExtractorService
 
 			YouTube.Search.List searchListByKeywordRequest = this.youtubeService.search().list("snippet");
 			searchListByKeywordRequest.setMaxResults(50L);
-			searchListByKeywordRequest.setQ("indian recipe cooking food");
+			searchListByKeywordRequest.setQ("\"indian recipe\" cooking food");
 			searchListByKeywordRequest.setType("channel");
 			
 			searchListByKeywordRequest.setPublishedAfter(new DateTime(startDate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));

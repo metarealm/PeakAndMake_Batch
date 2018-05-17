@@ -12,7 +12,6 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import com.pnm.batching.dto.mongo.timesplice.LastProcessTime;
@@ -21,10 +20,11 @@ import com.pnm.batching.services.DataExtractorService;
 import com.pnm.batching.services.DataLoaderService;
 import com.pnm.batching.services.YTInfoExtractorService;
 
-@Primary
-@Component
-public class YTChannelDataTasklet implements Tasklet {
 
+@Component("YTVideoTasklet")
+public class YTVideoDataTasklet implements Tasklet {
+
+	
 	private YTInfoExtractorService extractorSvc;
 	private DataLoaderService loaderSvc;
 	
@@ -34,7 +34,7 @@ public class YTChannelDataTasklet implements Tasklet {
 	private DateProcessRepository dateRepository;
 
 	@Autowired
-	public YTChannelDataTasklet(@Qualifier("YTChannelService") DataExtractorService ytService, DataLoaderService mongLoaderSvc) {
+	public YTVideoDataTasklet(@Qualifier("YTVideoService") DataExtractorService ytService, DataLoaderService mongLoaderSvc) {
 		this.extractorSvc = (YTInfoExtractorService) ytService;
 		this.loaderSvc = mongLoaderSvc;
 		try {
@@ -45,8 +45,8 @@ public class YTChannelDataTasklet implements Tasklet {
 	}
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-		Optional<LastProcessTime> lastProcessedTime = dateRepository.findById("YouTubeChannelData");
 		
+		Optional<LastProcessTime> lastProcessedTime = dateRepository.findById("YouTubeVideoData");
 		
 		lastProcessedTime.ifPresent(
 				value -> {

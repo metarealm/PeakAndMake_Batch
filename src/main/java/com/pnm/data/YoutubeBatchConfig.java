@@ -12,6 +12,7 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -35,14 +36,28 @@ public class YoutubeBatchConfig extends DefaultBatchConfigurer {
 	@Autowired
 	private Tasklet importChannelDataTask;
 	
+	@Autowired
+	@Qualifier("YTVideoTasklet")
+	private Tasklet importVideoDataTask;
+	
+//	@Bean
+//	public Job importChannelDataJob(Step channelDataProcessor) {
+//		return jobBuilderFactory.get("importYTdataJob").start(channelDataProcessor).build();
+//	}
+	
 	@Bean
-	public Job importUserJob(Step channelDataProcessor) {
-		return jobBuilderFactory.get("importYTdataJob").start(channelDataProcessor).build();
+	public Job importVideoDataJob(Step videoDataProcessor) {
+		return jobBuilderFactory.get("importYTdataJob").start(videoDataProcessor).build();
 	}
 
 	@Bean
 	protected Step channelDataProcessor(JobCompletionNotificationListener listener) {
 		return stepBuilderFactory.get("process channel data").tasklet(importChannelDataTask).listener(listener).build();
+	}
+	
+	@Bean
+	protected Step videoDataProcessor(JobCompletionNotificationListener listener) {
+		return stepBuilderFactory.get("process Video data").tasklet(importVideoDataTask).listener(listener).build();
 	}
 
 }

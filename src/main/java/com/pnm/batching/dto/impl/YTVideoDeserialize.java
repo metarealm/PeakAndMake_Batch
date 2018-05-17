@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
-public class YTVideoDeserialize extends StdDeserializer<YTChannelDto> {
+public class YTVideoDeserialize extends StdDeserializer<YTVideoDtoImpl> {
 
 	/**
 	 * 
@@ -19,23 +19,22 @@ public class YTVideoDeserialize extends StdDeserializer<YTChannelDto> {
 		this(null);
 	}
 
-	protected YTVideoDeserialize(Class<YTChannelDto> vc) {
+	protected YTVideoDeserialize(Class<YTVideoDtoImpl> vc) {
 		super(vc);
 	}
 
 	@Override
-	public YTChannelDto deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+	public YTVideoDtoImpl deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
 		JsonNode productNode = jp.getCodec().readTree(jp);
-		YTChannelDto channelData = new YTChannelDto();
-		channelData.setChannelID(productNode.get("snippet").get("channelId").textValue());
-		channelData.setEtag(productNode.get("etag").textValue());
-		channelData.setChannelTitle(productNode.get("snippet").get("channelTitle").textValue());
-		channelData.setChannelDescription(productNode.get("snippet").get("description").textValue());
-		channelData.setChannelImageDefaultUrl(productNode.get("snippet").get("channelTitle").textValue());
-		channelData.setChannelImageDefaultUrl(productNode.get("snippet").get("thumbnails").get("default").get("url").textValue());
-		channelData.setChannelImageHighUrl(productNode.get("snippet").get("thumbnails").get("high").get("url").textValue());
-		channelData.setChannelImageMediumUrl(productNode.get("snippet").get("thumbnails").get("medium").get("url").textValue());
-		return channelData;
+		YTVideoDtoImpl videoData = new YTVideoDtoImpl();
+		videoData.setVideoID(productNode.get("id").textValue());
+		videoData.setEtag(productNode.get("etag").textValue());
+		videoData.setVideoTitle(productNode.get("snippet").get("title").textValue());
+		videoData.setVideoDescription(productNode.get("snippet").get("description").textValue());
+		videoData.setVideoImageDefaultUrl(productNode.get("snippet").get("thumbnails").get("default").get("url").textValue());
+		videoData.setVideoImageHighUrl(productNode.get("snippet").get("thumbnails").get("high").get("url").textValue());
+		videoData.setVideoImageMediumUrl(productNode.get("snippet").get("thumbnails").get("medium").get("url").textValue());
+		return videoData;
 	}
 
 }
