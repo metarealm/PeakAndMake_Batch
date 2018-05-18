@@ -32,31 +32,21 @@ public class YoutubeBatchConfig extends DefaultBatchConfigurer {
 
 	@Autowired
 	public StepBuilderFactory stepBuilderFactory;
-
-	@Autowired
-	private Tasklet importChannelDataTask;
-	
-	@Autowired
-	@Qualifier("YTVideoTasklet")
-	private Tasklet importVideoDataTask;
-	
-//	@Bean
-//	public Job importChannelDataJob(Step channelDataProcessor) {
-//		return jobBuilderFactory.get("importYTdataJob").start(channelDataProcessor).build();
-//	}
 	
 	@Bean
-	public Job importVideoDataJob(Step videoDataProcessor) {
-		return jobBuilderFactory.get("importYTdataJob").start(videoDataProcessor).build();
+	public Job importChannelDataJob(Step channelDataProcessor,Step videoDataProcessor ) {
+		return jobBuilderFactory.get("importYTdataJob").start(channelDataProcessor).next(videoDataProcessor).build();
 	}
 
 	@Bean
-	protected Step channelDataProcessor(JobCompletionNotificationListener listener) {
+	protected Step channelDataProcessor(JobCompletionNotificationListener listener , 
+			@Qualifier("YTChannelTasklet")Tasklet importChannelDataTask) {
 		return stepBuilderFactory.get("process channel data").tasklet(importChannelDataTask).listener(listener).build();
 	}
 	
 	@Bean
-	protected Step videoDataProcessor(JobCompletionNotificationListener listener) {
+	protected Step videoDataProcessor(JobCompletionNotificationListener listener,
+			@Qualifier("YTVideoTasklet")Tasklet importVideoDataTask) {
 		return stepBuilderFactory.get("process Video data").tasklet(importVideoDataTask).listener(listener).build();
 	}
 

@@ -20,22 +20,19 @@ import com.pnm.batching.services.DataExtractorService;
 import com.pnm.batching.services.DataLoaderService;
 import com.pnm.batching.services.YTInfoExtractorService;
 
-
 @Component("YTVideoTasklet")
 public class YTVideoDataTasklet implements Tasklet {
 
-	
 	private YTInfoExtractorService extractorSvc;
 	private DataLoaderService loaderSvc;
-	
-	private int taskletLoop = 0 ;
-
-	@Autowired
 	private DateProcessRepository dateRepository;
 
+	private int taskletLoop = 0;
+
 	@Autowired
-	public YTVideoDataTasklet(@Qualifier("YTVideoService") DataExtractorService ytService, DataLoaderService mongLoaderSvc) {
+	public YTVideoDataTasklet(@Qualifier("YTVideoService") DataExtractorService ytService, @Qualifier("MongoVideoService") DataLoaderService mongLoaderSvc, DateProcessRepository dateRepository) {
 		this.extractorSvc = (YTInfoExtractorService) ytService;
+		this.dateRepository = dateRepository;
 		this.loaderSvc = mongLoaderSvc;
 		try {
 			this.extractorSvc.setDataSrc();
@@ -43,24 +40,23 @@ public class YTVideoDataTasklet implements Tasklet {
 			e.printStackTrace();
 		}
 	}
+
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-		
+
 		Optional<LastProcessTime> lastProcessedTime = dateRepository.findById("YouTubeVideoData");
-		
-		lastProcessedTime.ifPresent(
-				value -> {
-					LocalDateTime startTime = value.getQueryStartDate();
-					System.out.println(startTime.toString());
-					LocalDateTime endTime = value.getQueryStartDate().plusMonths(1L);
-					List<?> ytData = this.extractorSvc.getJsonData(startTime, endTime );
-					loaderSvc.loadData(ytData);
-					value.setQueryStartDate(endTime);
-					System.out.println("going to save the new date" + endTime.toString());
-					dateRepository.save(value);
-					System.out.println(" dummy tasklet executed");
-				}
-			);
+
+		lastProcessedTime.ifPresent(value -> {
+			LocalDateTime startTime = value.getQueryStartDate();
+			System.out.println(startTime.toString());
+			LocalDateTime endTime = value.getQueryStartDate().plusMonths(1L);
+			List<?> ytData = this.extractorSvc.getJsonData(startTime, endTime);
+			loaderSvc.loadData(ytData);
+			value.setQueryStartDate(endTime);
+			System.out.println("going to save the new date" + endTime.toString());
+			dateRepository.save(value);
+			System.out.println(" dummy tasklet executed");
+		});
 		taskletLoop++;
 		System.out.println("tasklet loop count is =" + taskletLoop);
 		return (taskletLoop > 5) ? RepeatStatus.FINISHED : RepeatStatus.CONTINUABLE;
