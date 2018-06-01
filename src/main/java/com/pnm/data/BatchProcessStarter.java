@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import com.mongodb.MongoClient;
 import com.pnm.batching.dto.mongo.timesplice.LastProcessTime;
-import com.pnm.batching.dto.mongo.timesplice.ProcessTimeLine;
 import com.pnm.batching.reactive.data.DateProcessRepository;
 
 @Component
@@ -59,26 +58,6 @@ public class BatchProcessStarter implements CommandLineRunner {
 			datedata = new LastProcessTime("YouTubeVideoData", queryStartTime);
 			dateRepository.save(datedata);
 		}
-		System.out.println("Starting the batch job");
-		JobExecution execution = jobLauncher.run(job, new JobParameters());
-		System.out.println("Job Status : " + execution.getStatus());
-		System.out.println("Job completed");
-	}
-
-	public void run_old(String... args) throws Exception {
-
-		System.out.println(" date data loader");
-
-		boolean DateDataExists = mongoClient.getDatabase("peeknmake").listCollectionNames().into(new ArrayList<String>()).contains("DateData");
-		if (!DateDataExists) {
-			LocalDateTime queryStartTime = LocalDateTime.parse("2018-01-01T00:00:00");
-			for (int i = 0; i < 200; i++) {
-				queryStartTime = queryStartTime.minusMonths(1L);
-				ProcessTimeLine datedata = new ProcessTimeLine(queryStartTime);
-				// dateRepository.save(datedata);
-			}
-		}
-
 		System.out.println("Starting the batch job");
 		JobExecution execution = jobLauncher.run(job, new JobParameters());
 		System.out.println("Job Status : " + execution.getStatus());

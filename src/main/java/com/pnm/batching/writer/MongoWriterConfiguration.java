@@ -1,18 +1,13 @@
 package com.pnm.batching.writer;
 
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.mongodb.MongoClient;
 
-//@Configuration
-//@EnableBatchProcessing
 //@Profile("dev1")
 @PropertySource("classpath:config.properties")
 public class MongoWriterConfiguration extends AbstractMongoConfiguration {

@@ -28,7 +28,6 @@ public class YTChannelDataTasklet implements Tasklet {
 	private YTInfoExtractorService extractorSvc;
 	private DataLoaderService loaderSvc;
 	private DateProcessRepository dateRepository;
-
 	private int taskletLoop = 0;
 
 	@Autowired
