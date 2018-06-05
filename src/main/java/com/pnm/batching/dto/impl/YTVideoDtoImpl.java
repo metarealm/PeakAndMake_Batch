@@ -9,24 +9,31 @@ import com.pnm.batching.dto.IYouTubeDTO;
 @Document(collection = "VideoData")
 @JsonDeserialize(using = YTVideoDeserialize.class)
 public class YTVideoDtoImpl implements IYouTubeDTO {
-	
+
 	private String etag;
 	@Id
 	private String videoID;
 	private String videoTitle;
-	private String videoDescription;
-	private String videoImageDefaultUrl;
-	private String videoImageHighUrl;
-	private String videoImageMediumUrl;
-	
+	private String videoDescription ="";
+	private String videoImageDefaultUrl = "";
+	private String videoImageHighUrl = "";
+	private String videoImageMediumUrl = "";
+	private String videoTags = "";
+	private String video_channel_id = "";
+	private String video_channel_title = "";
+	private String video_creation_date = "";
+	private int viewCount =0;
+	private int likes = 0;
+	private int dislikes=0;
+	private String defaultAudioLanguage = "en";
 
-    public YTVideoDtoImpl() {
-    }
+	public YTVideoDtoImpl() {
+	}
 
-    public YTVideoDtoImpl(String id, String name) {
-        this.videoID = id;
-        this.videoTitle = name;
-    }
+	public YTVideoDtoImpl(String id, String name) {
+		this.videoID = id;
+		this.videoTitle = name;
+	}
 
 	/**
 	 * @return the etag
@@ -36,7 +43,8 @@ public class YTVideoDtoImpl implements IYouTubeDTO {
 	}
 
 	/**
-	 * @param etag the etag to set
+	 * @param etag
+	 *            the etag to set
 	 */
 	public void setEtag(String etag) {
 		this.etag = etag;
@@ -50,7 +58,8 @@ public class YTVideoDtoImpl implements IYouTubeDTO {
 	}
 
 	/**
-	 * @param videoID the videoID to set
+	 * @param videoID
+	 *            the videoID to set
 	 */
 	public void setVideoID(String videoID) {
 		this.videoID = videoID;
@@ -64,7 +73,8 @@ public class YTVideoDtoImpl implements IYouTubeDTO {
 	}
 
 	/**
-	 * @param videoTitle the videoTitle to set
+	 * @param videoTitle
+	 *            the videoTitle to set
 	 */
 	public void setVideoTitle(String videoTitle) {
 		this.videoTitle = videoTitle;
@@ -78,7 +88,8 @@ public class YTVideoDtoImpl implements IYouTubeDTO {
 	}
 
 	/**
-	 * @param videoDescription the videoDescription to set
+	 * @param videoDescription
+	 *            the videoDescription to set
 	 */
 	public void setVideoDescription(String videoDescription) {
 		this.videoDescription = videoDescription;
@@ -92,7 +103,8 @@ public class YTVideoDtoImpl implements IYouTubeDTO {
 	}
 
 	/**
-	 * @param videoImageDefaultUrl the videoImageDefaultUrl to set
+	 * @param videoImageDefaultUrl
+	 *            the videoImageDefaultUrl to set
 	 */
 	public void setVideoImageDefaultUrl(String videoImageDefaultUrl) {
 		this.videoImageDefaultUrl = videoImageDefaultUrl;
@@ -106,7 +118,8 @@ public class YTVideoDtoImpl implements IYouTubeDTO {
 	}
 
 	/**
-	 * @param videoImageHighUrl the videoImageHighUrl to set
+	 * @param videoImageHighUrl
+	 *            the videoImageHighUrl to set
 	 */
 	public void setVideoImageHighUrl(String videoImageHighUrl) {
 		this.videoImageHighUrl = videoImageHighUrl;
@@ -120,11 +133,126 @@ public class YTVideoDtoImpl implements IYouTubeDTO {
 	}
 
 	/**
-	 * @param videoImageMediumUrl the videoImageMediumUrl to set
+	 * @param videoImageMediumUrl
+	 *            the videoImageMediumUrl to set
 	 */
 	public void setVideoImageMediumUrl(String videoImageMediumUrl) {
 		this.videoImageMediumUrl = videoImageMediumUrl;
 	}
 
-	
+	/**
+	 * @return the videoTags
+	 */
+	public String getVideoTags() {
+		return videoTags;
+	}
+
+	/**
+	 * @param videoTags
+	 *            the videoTags to set
+	 */
+	public void setVideoTags(String videoTags) {
+		this.videoTags = videoTags;
+	}
+
+	/**
+	 * @return the video_channel_id
+	 */
+	public String getVideo_channel_id() {
+		return video_channel_id;
+	}
+
+	/**
+	 * @param video_channel_id
+	 *            the video_channel_id to set
+	 */
+	public void setVideo_channel_id(String video_channel_id) {
+		this.video_channel_id = video_channel_id;
+	}
+
+	/**
+	 * @return the video_channel_title
+	 */
+	public String getVideo_channel_title() {
+		return video_channel_title;
+	}
+
+	/**
+	 * @param video_channel_title
+	 *            the video_channel_title to set
+	 */
+	public void setVideo_channel_title(String video_channel_title) {
+		this.video_channel_title = video_channel_title;
+	}
+
+	/**
+	 * @return the video_creation_date
+	 */
+	public String getVideo_creation_date() {
+		return video_creation_date;
+	}
+
+	/**
+	 * @param video_creation_date the video_creation_date to set
+	 */
+	public void setVideo_creation_date(String video_creation_date) {
+		this.video_creation_date = video_creation_date;
+	}
+
+	/**
+	 * @return the viewCount
+	 */
+	public int getViewCount() {
+		return viewCount;
+	}
+
+	/**
+	 * @param viewCount the viewCount to set
+	 */
+	public void setViewCount(int viewCount) {
+		this.viewCount = viewCount;
+	}
+
+	/**
+	 * @return the likes
+	 */
+	public int getLikes() {
+		return likes;
+	}
+
+	/**
+	 * @param likes the likes to set
+	 */
+	public void setLikes(int likes) {
+		this.likes = likes;
+	}
+
+	/**
+	 * @return the dislikes
+	 */
+	public int getDislikes() {
+		return dislikes;
+	}
+
+	/**
+	 * @param dislikes the dislikes to set
+	 */
+	public void setDislikes(int dislikes) {
+		this.dislikes = dislikes;
+	}
+
+	/**
+	 * @return the defaultAudioLanguage
+	 */
+	public String getDefaultAudioLanguage() {
+		return defaultAudioLanguage;
+	}
+
+	/**
+	 * @param defaultAudioLanguage the defaultAudioLanguage to set
+	 */
+	public void setDefaultAudioLanguage(String defaultAudioLanguage) {
+		this.defaultAudioLanguage = defaultAudioLanguage;
+	}
+
 }

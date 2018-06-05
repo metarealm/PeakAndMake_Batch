@@ -93,6 +93,10 @@ public abstract class YTInfoExtractorService implements DataExtractorService {
 		Credential credential = authorize();
 		this.youtubeService = new YouTube.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build();
 	}
+	
+	public YouTube getDataSrc() {
+		return this.youtubeService;
+	}
 
 	public abstract HashSet<IYouTubeDTO> getYouTubeInfo();
 }

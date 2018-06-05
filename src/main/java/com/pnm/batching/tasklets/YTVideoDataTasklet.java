@@ -29,6 +29,8 @@ public class YTVideoDataTasklet implements Tasklet {
 
 	private int taskletLoop = 0;
 
+	private int maxLoopCount = 5;
+
 	@Autowired
 	public YTVideoDataTasklet(@Qualifier("YTVideoService") DataExtractorService ytService, @Qualifier("MongoVideoService") DataLoaderService mongLoaderSvc, DateProcessRepository dateRepository) {
 		this.extractorSvc = (YTInfoExtractorService) ytService;
@@ -59,7 +61,7 @@ public class YTVideoDataTasklet implements Tasklet {
 		});
 		taskletLoop++;
 		System.out.println("tasklet loop count is =" + taskletLoop);
-		return (taskletLoop > 5) ? RepeatStatus.FINISHED : RepeatStatus.CONTINUABLE;
+		return (taskletLoop > this.maxLoopCount) ? RepeatStatus.FINISHED : RepeatStatus.CONTINUABLE;
 	}
 
 }

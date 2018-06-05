@@ -33,11 +33,10 @@ import com.pnm.batching.services.YTInfoExtractorService;
 @Qualifier("YTVideoService")
 public class YTVideoInfoExtractorServiceImpl extends YTInfoExtractorService {
 
-	private int maxQueryLoop = 2;
+	private int maxQueryLoop = 10;
 
 	@Override
 	public HashSet<IYouTubeDTO> getYouTubeInfo() {
-
 		return null;
 	}
 
@@ -52,7 +51,6 @@ public class YTVideoInfoExtractorServiceImpl extends YTInfoExtractorService {
 			searchListByKeywordRequest.setType("video");
 			searchListByKeywordRequest.setVideoEmbeddable("true");
 			searchListByKeywordRequest.setFields("items(id/videoId)");
-
 			searchListByKeywordRequest.setPublishedAfter(new DateTime(startDate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
 			searchListByKeywordRequest.setPublishedBefore(new DateTime(endQueryDate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
 
@@ -73,7 +71,7 @@ public class YTVideoInfoExtractorServiceImpl extends YTInfoExtractorService {
 					// Call the YouTube Data API's youtube.videos.list method to
 					// retrieve the resources that represent the specified
 					// videos.
-					YouTube.Videos.List listVideosRequest = this.youtubeService.videos().list("snippet, recordingDetails").setId(videoId);
+					YouTube.Videos.List listVideosRequest = this.youtubeService.videos().list("snippet, statistics").setId(videoId);
 					VideoListResponse listResponse = listVideosRequest.execute();
 					// List<Video> videoList = listResponse.getItems();
 					ObjectMapper mapper = new ObjectMapper();

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -25,24 +26,25 @@ import com.pnm.batching.services.YTInfoExtractorService;
 @Qualifier("YTChannelService")
 public class YTChannelInfoExtractorServiceImpl<E> extends YTInfoExtractorService {
 
-	private int maxQueryLoop = 10;
+	private Environment env;
+	private int maxQueryLoop = Integer.valueOf(env.getProperty("YTChannel.repeatSameQuery"));
 
 	@Override
 	public HashSet<IYouTubeDTO> getYouTubeInfo() {
 		return null;
 	}
 
-	public List<YTChannelDto> getJsonData(LocalDateTime startDate ,LocalDateTime endQueryDate) {
-		
+	public List<YTChannelDto> getJsonData(LocalDateTime startDate, LocalDateTime endQueryDate) {
+
 		List<YTChannelDto> channelData = new ArrayList<>();
 		try {
 			Optional<String> pageToken = Optional.empty();
 
 			YouTube.Search.List searchListByKeywordRequest = this.youtubeService.search().list("snippet");
-			searchListByKeywordRequest.setMaxResults(50L);
+			searchListByKeywordRequest.setMaxResults(Long.valueOf(env.getProperty("YTChannel.querySize")));
 			searchListByKeywordRequest.setQ("\"indian recipe\" cooking food");
 			searchListByKeywordRequest.setType("channel");
-			
+
 			searchListByKeywordRequest.setPublishedAfter(new DateTime(startDate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
 			searchListByKeywordRequest.setPublishedBefore(new DateTime(endQueryDate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()));
 
@@ -50,8 +52,8 @@ public class YTChannelInfoExtractorServiceImpl<E> extends YTInfoExtractorService
 
 				pageToken.ifPresent(val -> searchListByKeywordRequest.setPageToken(val));
 				SearchListResponse response = searchListByKeywordRequest.execute();
-//				System.out.println("**************response*************");
-//				System.out.println(response.toPrettyString());
+				// System.out.println("**************response*************");
+				// System.out.println(response.toPrettyString());
 				ObjectMapper mapper = new ObjectMapper();
 				if (mapper.readTree(response.toString()).get("items") != null) {
 					String itemString = mapper.readTree(response.toString()).get("items").toString();
