@@ -2,6 +2,7 @@
 package com.pnm.batching.tasklets;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +14,7 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.pnm.batching.dto.mongo.timesplice.LastProcessTime;
@@ -25,14 +27,17 @@ import com.pnm.batching.services.YTInfoExtractorService;
 @Component("YTChannelTasklet")
 public class YTChannelDataTasklet implements Tasklet {
 
+
+	protected Environment env;
 	private YTInfoExtractorService extractorSvc;
 	private DataLoaderService loaderSvc;
 	private DateProcessRepository dateRepository;
 	private int taskletLoop = 0;
+	private int maxLoopCount = 5;
 
 	@Autowired
 	public YTChannelDataTasklet(@Qualifier("YTChannelService") DataExtractorService ytService, @Qualifier("MongoChannelService") DataLoaderService mongLoaderSvc,
-			DateProcessRepository dateRepository) {
+			DateProcessRepository dateRepository,Environment env) {
 		this.extractorSvc = (YTInfoExtractorService) ytService;
 		this.dateRepository = dateRepository;
 		this.loaderSvc = mongLoaderSvc;
@@ -41,6 +46,7 @@ public class YTChannelDataTasklet implements Tasklet {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		maxLoopCount = Integer.valueOf(env.getProperty("YTVideo.BatchSize"));
 	}
 
 	@Override
@@ -51,6 +57,8 @@ public class YTChannelDataTasklet implements Tasklet {
 			LocalDateTime startTime = value.getQueryStartDate();
 			System.out.println(startTime.toString());
 			LocalDateTime endTime = value.getQueryStartDate().plusMonths(1L);
+			if (Duration.between(endTime, LocalDateTime.now()).getSeconds() < 0)
+				return;
 			List<?> ytData = this.extractorSvc.getJsonData(startTime, endTime);
 			loaderSvc.loadData(ytData);
 			value.setQueryStartDate(endTime);
@@ -60,7 +68,7 @@ public class YTChannelDataTasklet implements Tasklet {
 		});
 		taskletLoop++;
 		System.out.println("tasklet loop count is =" + taskletLoop);
-		return (taskletLoop > 5) ? RepeatStatus.FINISHED : RepeatStatus.CONTINUABLE;
+		return (taskletLoop > this.maxLoopCount) ? RepeatStatus.FINISHED : RepeatStatus.CONTINUABLE;
 	}
 
 }

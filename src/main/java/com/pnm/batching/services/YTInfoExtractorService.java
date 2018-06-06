@@ -9,6 +9,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -25,7 +28,9 @@ import com.pnm.batching.dto.IYouTubeDTO;
 
 public abstract class YTInfoExtractorService implements DataExtractorService {
 
-
+	@Autowired
+	protected Environment env;
+	
 	protected YouTube youtubeService = null;
 	/** Application name. */
 	private static final String APPLICATION_NAME = "Peek n Make";

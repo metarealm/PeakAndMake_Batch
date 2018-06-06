@@ -52,9 +52,9 @@ public class YTVideoDeserialize extends StdDeserializer<YTVideoDtoImpl> {
 
 		if (productNode.get("statistics").get("dislikeCount") != null)
 			videoData.setDislikes(Integer.valueOf(productNode.get("statistics").get("dislikeCount").textValue()));
-		if (productNode.get("statistics").get("dislikeCount") != null)
+		if (productNode.get("statistics").get("likeCount") != null)
 			videoData.setLikes(Integer.valueOf(productNode.get("statistics").get("likeCount").textValue()));
-		if (productNode.get("statistics").get("dislikeCount") != null)
+		if (productNode.get("statistics").get("viewCount") != null)
 			videoData.setViewCount(Integer.valueOf(productNode.get("statistics").get("viewCount").textValue()));
 		return videoData;
 	}

@@ -2,6 +2,7 @@
 package com.pnm.batching.tasklets;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,7 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.pnm.batching.dto.mongo.timesplice.LastProcessTime;
@@ -23,16 +25,18 @@ import com.pnm.batching.services.YTInfoExtractorService;
 @Component("YTVideoTasklet")
 public class YTVideoDataTasklet implements Tasklet {
 
+	@Autowired
+	protected Environment env;
 	private YTInfoExtractorService extractorSvc;
 	private DataLoaderService loaderSvc;
 	private DateProcessRepository dateRepository;
 
 	private int taskletLoop = 0;
-
 	private int maxLoopCount = 5;
 
 	@Autowired
-	public YTVideoDataTasklet(@Qualifier("YTVideoService") DataExtractorService ytService, @Qualifier("MongoVideoService") DataLoaderService mongLoaderSvc, DateProcessRepository dateRepository) {
+	public YTVideoDataTasklet(@Qualifier("YTVideoService") DataExtractorService ytService, @Qualifier("MongoVideoService") DataLoaderService mongLoaderSvc, 
+			DateProcessRepository dateRepository,Environment env) {
 		this.extractorSvc = (YTInfoExtractorService) ytService;
 		this.dateRepository = dateRepository;
 		this.loaderSvc = mongLoaderSvc;
@@ -41,6 +45,7 @@ public class YTVideoDataTasklet implements Tasklet {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		maxLoopCount = Integer.valueOf(env.getProperty("YTVideo.BatchSize"));
 	}
 
 	@Override
@@ -51,7 +56,9 @@ public class YTVideoDataTasklet implements Tasklet {
 		lastProcessedTime.ifPresent(value -> {
 			LocalDateTime startTime = value.getQueryStartDate();
 			System.out.println(startTime.toString());
-			LocalDateTime endTime = value.getQueryStartDate().plusMonths(1L);
+			LocalDateTime endTime = value.getQueryStartDate().plusDays(7L);
+			if (Duration.between(endTime, LocalDateTime.now()).getSeconds() < 0)
+				return;
 			List<?> ytData = this.extractorSvc.getJsonData(startTime, endTime);
 			loaderSvc.loadData(ytData);
 			value.setQueryStartDate(endTime);
