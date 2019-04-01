@@ -1,2 +1,12 @@
+
+#Gradle related git ignores
 /.gradle/
 /build/
+
+
+#Don't merge the client_secrete
+client_secret.json
+
+#Mac temp files
+.DS_Store
+
