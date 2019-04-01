@@ -9,6 +9,7 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -29,12 +30,24 @@ public class BatchProcessStarter implements CommandLineRunner {
 	private DateProcessRepository dateRepository;
 
 	@Autowired
-	private Job job;
+	@Qualifier("importChannelDataJob")
+	private Job importChannelDataJob;
+	
+	@Autowired
+	@Qualifier("populateSubTitles")
+	private Job populateSubTitles;
+
+	@Autowired
+	@Qualifier("pushToSolr")
+	private Job pushToSolr;
 
 	@Override
 	public void run(String... args) throws Exception {
 		boolean DateDataExists = mongoClient.getDatabase("peeknmake").listCollectionNames().into(new ArrayList<String>()).contains("ProcessDateData");
 
+//		JobExecution execution = jobLauncher.run(populateSubTitles, new JobParameters());
+//		System.out.println("importChannelData Job Status : " + execution.getStatus());
+		
 		if (DateDataExists) {
 			Optional<LastProcessTime> channelLastProcessedTime = dateRepository.findById("YouTubeChannelData");
 			if (!channelLastProcessedTime.isPresent()) {
@@ -58,10 +71,10 @@ public class BatchProcessStarter implements CommandLineRunner {
 			datedata = new LastProcessTime("YouTubeVideoData", queryStartTime);
 			dateRepository.save(datedata);
 		}
-		System.out.println("Starting the batch job");
-		JobExecution execution = jobLauncher.run(job, new JobParameters());
-		System.out.println("Job Status : " + execution.getStatus());
-		System.out.println("Job completed");
+//		System.out.println("Starting the importChannelDataJob job");
+//		execution = jobLauncher.run(importChannelDataJob, new JobParameters());
+//		System.out.println("importChannelData Job Status : " + execution.getStatus());
+//		System.out.println("Job completed");
 	}
 
 }

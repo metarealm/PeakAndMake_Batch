@@ -11,6 +11,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.ResourceUtils;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -76,8 +78,10 @@ public abstract class YTInfoExtractorService implements DataExtractorService {
 		// InputStream in =
 		// QuickStart.class.getResourceAsStream("/client_secret.json");
 
-		File initialFile = new File("src/main/resources/client_secret.json");
-		InputStream in = new FileInputStream(initialFile);
+//		File initialFile = new File("src/main/resources/client_secret.json");
+//		File initialFile = ResourceUtils.getFile("classpath:/config/client_secret.json");
+//		InputStream in = new FileInputStream(initialFile);
+		InputStream in = new ClassPathResource("/config/client_secret.json").getInputStream();
 		GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
 		// Build flow and trigger user authorization request.

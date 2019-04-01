@@ -17,7 +17,7 @@ import com.pnm.batching.services.DataExtractorService;
  * @author bhabanidas
  *
  */
-@Component
+@Component("DummyTasklet")
 public class DummyTasklet implements Tasklet {
 
 	@Autowired
@@ -27,7 +27,7 @@ public class DummyTasklet implements Tasklet {
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 		System.out.println(" dummy tasklet executed");
-		return null;
+		return RepeatStatus.FINISHED;
 	}
 
 }
